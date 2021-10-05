@@ -28,12 +28,15 @@ Stats_fun <- function (df){
      
    }
    
-   return(hist(npoc.tn.combined$NPOC_CV, breaks = 55))
-   hist(npoc.tn.combined$NPOC_range, breaks = 55)
-   hist(npoc.tn.combined$NPOC_variance, breaks = 55)
+   hist(data.stats$NPOC_CV, breaks = 55)
+  # hist(data.stats$NPOC_range, breaks = 55)
+   #hist(data.stats$NPOC_variance, breaks = 55)
+   hist(data.stats$TN_CV, breaks = 55)
+   #hist(data.stats$TN_range, breaks = 55)
+   #hist(data.stats$TN_variance, breaks = 55)
   return(data.stats)
  }else{
-    ions = names(df)[2:ncol(df)]
+    ions = names(df)[2:(ncol(df)-1)]
     data.stats = as.data.frame(matrix(NA,ncol = ((length(ions)*3)+2), nrow = nrow(df)))
     #Creating column names
    name = c("Sample_ID","Sample_name")
@@ -53,20 +56,42 @@ Stats_fun <- function (df){
   
   unique.sample.names = unique(data.stats$Sample_name)
   
-for (j in 2:length(ions)){  
+for (j in 1:length(ions)){  
   df1 = cbind.data.frame(Sample_ID = df$Sample_ID,df[grep(pattern = ions[j],x = colnames(df))])
   for (i in 1:length(unique.sample.names)){
     index = grep(unique.sample.names[i],data.stats$Sample_name)
     temp = df1[grep(unique.sample.names[i],data.stats$Sample_name),2]
    
+    if (length(grep("TRUE",is.na(temp)))==2){
+      data.stats[index,grep(pattern = paste0(ions[j],"_CV"),x = colnames(data.stats))] = "Two-reps are NA"
+      data.stats[index,grep(pattern = paste0(ions[j],"_range"),x = colnames(data.stats))] =  "Two-reps are NA"
+      data.stats[index,grep(pattern = paste0(ions[j],"_variance"),x = colnames(data.stats))] = "Two-reps are NA"
+      
+    }else if(length(grep("TRUE",is.na(temp)))==3){
+      data.stats[index,grep(pattern = paste0(ions[j],"_CV"),x = colnames(data.stats))] = "Three-reps are NA"
+      data.stats[index,grep(pattern = paste0(ions[j],"_range"),x = colnames(data.stats))] =  "Three-reps are NA"
+      data.stats[index,grep(pattern = paste0(ions[j],"_variance"),x = colnames(data.stats))] = "Three-reps are NA"
+    }else if(length(grep("TRUE",is.na(temp)))==1){
+      temp = na.omi(temp)
+      data.stats[index,grep(pattern = paste0(ions[j],"_CV"),x = colnames(data.stats))] = sd(temp) / mean(temp) * 100
+      data.stats[index,grep(pattern = paste0(ions[j],"_range"),x = colnames(data.stats))] =  max(temp) - min(temp)
+      data.stats[index,grep(pattern = paste0(ions[j],"_variance"),x = colnames(data.stats))] = var(temp)
+    }else{
      data.stats[index,grep(pattern = paste0(ions[j],"_CV"),x = colnames(data.stats))] = sd(temp) / mean(temp) * 100
     data.stats[index,grep(pattern = paste0(ions[j],"_range"),x = colnames(data.stats))] =  max(temp) - min(temp)
     data.stats[index,grep(pattern = paste0(ions[j],"_variance"),x = colnames(data.stats))] = var(temp)
-    
+    } 
     
   }
 } 
-  
+  cv.unique = (grep("CV",colnames(data.stats)))
+  for (k in 1:length(cv.unique)){
+    if (is.numeric(data.stats[,cv.unique[k]])==TRUE){
+      hist(data.stats[,cv.unique[k]], breaks = 55, main = names(data.stats)[cv.unique[k]], xlab = names(data.stats)[cv.unique[k]])
+    }
+   
+  }
+  return(data.stats)
   }
 
 }

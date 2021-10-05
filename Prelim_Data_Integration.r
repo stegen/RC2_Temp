@@ -8,6 +8,8 @@ rm(list=ls());graphics.off();
 campaign = 'RC2' # define which campaign is the focus, currently only written for RC2
 PNNL.dir = "C:/Users/gara009/"
 home.dir = "OneDrive - PNNL/Documents - Core Richland and Sequim Lab-Field Team/Data Generation and Files/"
+git.hub.dir = "C:/Users/gara009/OneDrive - PNNL/Documents/GitHub/RC2_Temp/" 
+source(paste0(git.hub.dir,"Stats_fun.R"))
   
 ion.in.dir = paste0(PNNL.dir,home.dir,campaign,"/Ions/02_FormattedData/")
 meta.in.dir = "//pnl/projects/SBR_SFA/RC2/03_Temporal_Study/06_Metadata/"
@@ -28,42 +30,10 @@ for (curr.file in npoc.tn.files) {
 }
 
 npoc.tn.combined$Event_ID = substring(npoc.tn.combined$Sample_ID,first = 1,last = 8) # pull out the unique event 'parent'
-str(npoc.tn.combined)
+#str(npoc.tn.combined)
 
-###########################VGC addition here##########################################
-# Add QAQC paramaters (CV, Range and variance) to the NPOC data based on the replicates
-# This might be made into its own chunck of code at some point
+npoc.tun.stats = Stats_fun(npoc.tn.combined)
 
-# Adding a column for just sample names, no reps
-# npoc.tn.combined$Sample_name = npoc.tn.combined$Sample_ID
-# npoc.tn.combined$Sample_name = gsub(pattern = "-1","",npoc.tn.combined$Sample_name)
-# npoc.tn.combined$Sample_name = gsub(pattern = "-2","",npoc.tn.combined$Sample_name)
-# npoc.tn.combined$Sample_name = gsub(pattern = "-3","",npoc.tn.combined$Sample_name)
-# 
-# unique.sample.names = unique(npoc.tn.combined$Sample_name)
-# 
-# for (i in 1:length(unique.sample.names)){
-#   index = grep(unique.sample.names[i],npoc.tn.combined$Sample_name)
-#   npoc.temp = npoc.tn.combined$NPOC_after_correcting_for_dilution[grep(unique.sample.names[i],npoc.tn.combined$Sample_name)]
-#   tn.temp = npoc.tn.combined$TN_after_correcting_for_dilution[grep(unique.sample.names[i],npoc.tn.combined$Sample_name)]
-#   npoc.tn.combined$NPOC_CV[index] = sd(npoc.temp) / mean(npoc.temp) * 100
-#   npoc.tn.combined$NPOC_range[index] =  max(npoc.temp) - min(npoc.temp)
-#   npoc.tn.combined$NPOC_variance[index] = var(npoc.temp)
-#   
-#   npoc.tn.combined$TN_CV[index] = sd(tn.temp) / mean(tn.temp) * 100
-#   npoc.tn.combined$TN_range[index] =  max(tn.temp) - min(tn.temp)
-#   npoc.tn.combined$TN_variance[index] = var(tn.temp)
-#   
-# }
-# 
-# hist(npoc.tn.combined$NPOC_CV, breaks = 55)
-# hist(npoc.tn.combined$NPOC_range, breaks = 55)
-# hist(npoc.tn.combined$NPOC_variance, breaks = 55)
-# 
-# hist(npoc.tn.combined$TN_CV, breaks = 55)
-# hist(npoc.tn.combined$TN_range, breaks = 55)
-# hist(npoc.tn.combined$TN_variance, breaks = 55)
-# ######################################################################################
 
 ### combine ion data across runs. want each ion as column and each row is a sample ID
 
@@ -136,6 +106,7 @@ ion.compiled$Event_ID = substring(ion.compiled$Sample_ID,first = 1,last = 8) # p
 str(ion.compiled)
 head(ion.compiled)
 
+ion.compiled.stats = Stats_fun(ion.compiled)
 ### read in FTICR data
 
 # this is the full set
