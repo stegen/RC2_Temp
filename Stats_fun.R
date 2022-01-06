@@ -16,8 +16,8 @@ Stats_fun <- function (df){
    # Calculate stats for each unique sample
    for (i in 1:length(unique.sample.names)){
      index = grep(unique.sample.names[i],data.stats$Sample_name)
-     npoc.temp = df$NPOC_after_correcting_for_dilution[grep(unique.sample.names[i],data.stats$Sample_name)]
-     tn.temp = df$TN_after_correcting_for_dilution[grep(unique.sample.names[i],data.stats$Sample_name)]
+     npoc.temp = df$NPOC_mg_C_per_L[grep(unique.sample.names[i],data.stats$Sample_name)]
+     tn.temp = df$TN_mg_N_per_L[grep(unique.sample.names[i],data.stats$Sample_name)]
      data.stats$NPOC_CV[index] = sd(npoc.temp) / mean(npoc.temp) * 100
      data.stats$NPOC_range[index] =  max(npoc.temp) - min(npoc.temp)
      data.stats$NPOC_variance[index] = var(npoc.temp)
