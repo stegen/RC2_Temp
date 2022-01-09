@@ -37,14 +37,15 @@ Stats_fun <- function (df){
   return(data.stats)
  }else{
     ions = names(df)[2:(ncol(df)-1)]
-    data.stats = as.data.frame(matrix(NA,ncol = ((length(ions)*3)+2), nrow = nrow(df)))
+    data.stats = as.data.frame(matrix(NA,ncol = ((length(ions)*4)+2), nrow = nrow(df)))
     #Creating column names
    name = c("Sample_ID","Sample_name")
     for (i in 1:length(ions)){
-      a = paste0(ions[i],"_CV")
-      b = paste0(ions[i],"_range")
-      c = paste0(ions[i],"_variance")
-      name = c(name,a,b,c)
+      a = paste0(ions[i],"_mg_per_L")
+      b = paste0(ions[i],"_CV")
+      c = paste0(ions[i],"_range")
+      d = paste0(ions[i],"_variance")
+      name = c(name,a,b,c,d)
     }
   colnames(data.stats) = name
   data.stats$Sample_ID = df$Sample_ID
@@ -61,7 +62,7 @@ for (j in 1:length(ions)){
   for (i in 1:length(unique.sample.names)){
     index = grep(unique.sample.names[i],data.stats$Sample_name)
     temp = df1[grep(unique.sample.names[i],data.stats$Sample_name),2]
-   
+  data.stats[index,grep(pattern = paste0(ions[j],"_mg_per_L"),x = colnames(data.stats))] = temp
     if (length(grep("TRUE",is.na(temp)))==2){
       data.stats[index,grep(pattern = paste0(ions[j],"_CV"),x = colnames(data.stats))] = "Two-reps are NA"
       data.stats[index,grep(pattern = paste0(ions[j],"_range"),x = colnames(data.stats))] =  "Two-reps are NA"
@@ -72,7 +73,7 @@ for (j in 1:length(ions)){
       data.stats[index,grep(pattern = paste0(ions[j],"_range"),x = colnames(data.stats))] =  "Three-reps are NA"
       data.stats[index,grep(pattern = paste0(ions[j],"_variance"),x = colnames(data.stats))] = "Three-reps are NA"
     }else if(length(grep("TRUE",is.na(temp)))==1){
-      temp = na.omi(temp)
+      temp = na.omit(temp)
       data.stats[index,grep(pattern = paste0(ions[j],"_CV"),x = colnames(data.stats))] = sd(temp) / mean(temp) * 100
       data.stats[index,grep(pattern = paste0(ions[j],"_range"),x = colnames(data.stats))] =  max(temp) - min(temp)
       data.stats[index,grep(pattern = paste0(ions[j],"_variance"),x = colnames(data.stats))] = var(temp)
