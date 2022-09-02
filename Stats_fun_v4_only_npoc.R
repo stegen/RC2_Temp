@@ -25,7 +25,7 @@ Stats_fun_v4_only_npoc <- function (df){
      
    }
    
-   hist(data.stats$NPOC_CV, breaks = 55)
+   #hist(data.stats$NPOC_CV, breaks = 55)
   # hist(data.stats$NPOC_range, breaks = 55)
    #hist(data.stats$NPOC_variance, breaks = 55)
    #hist(data.stats$TN_CV, breaks = 55)

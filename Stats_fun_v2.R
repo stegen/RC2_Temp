@@ -10,6 +10,9 @@ Stats_fun_v2 <- function (df){
    data.stats$Sample_name = gsub(pattern = "-1","",data.stats$Sample_name)
    data.stats$Sample_name = gsub(pattern = "-2","",data.stats$Sample_name)
    data.stats$Sample_name = gsub(pattern = "-3","",data.stats$Sample_name)
+   data.stats$Sample_name = gsub(pattern = "-4","",data.stats$Sample_name)
+   data.stats$Sample_name = gsub(pattern = "-5","",data.stats$Sample_name)
+   data.stats$Sample_name = gsub(pattern = "-6","",data.stats$Sample_name)
    
    unique.sample.names = unique(data.stats$Sample_name)
    
@@ -30,10 +33,10 @@ Stats_fun_v2 <- function (df){
      
    }
    
-   hist(data.stats$NPOC_CV, breaks = 55)
+  # hist(data.stats$NPOC_CV, breaks = 55)
   # hist(data.stats$NPOC_range, breaks = 55)
    #hist(data.stats$NPOC_variance, breaks = 55)
-   hist(data.stats$TN_CV, breaks = 55)
+  # hist(data.stats$TN_CV, breaks = 55)
    #hist(data.stats$TN_range, breaks = 55)
    #hist(data.stats$TN_variance, breaks = 55)
   return(data.stats)
