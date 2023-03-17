@@ -1,4 +1,4 @@
-Stats_fun_v2 <- function (df){
+Stats_fun_v2_ECA <- function (df){
   # This function relies on the samples to be introduced in the data as Sample_ID
  if ("NPOC_mg_C_per_L"%in% colnames(df) == TRUE){
    # Adding a column for just sample names, no reps
