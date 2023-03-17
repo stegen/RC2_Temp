@@ -57,10 +57,9 @@ Stats_fun_v2 <- function (df){
   data.stats$Sample_ID = df$Sample_ID
   # Removing the replicates from the sample ID
   data.stats$Sample_name = data.stats$Sample_ID
-  data.stats$Sample_name = gsub(pattern = "-1","",data.stats$Sample_name)
-  data.stats$Sample_name = gsub(pattern = "-2","",data.stats$Sample_name)
-  data.stats$Sample_name = gsub(pattern = "-3","",data.stats$Sample_name)
-  
+  data.stats$Sample_name = gsub(pattern = "-W.*$","-W",data.stats$Sample_name)
+  data.stats$Sample_name = gsub(pattern = "-D.*$","-D",data.stats$Sample_name)
+
   unique.sample.names = unique(data.stats$Sample_name)
   
 for (j in 1:length(ions)){  
@@ -75,15 +74,20 @@ for (j in 1:length(ions)){
       data.stats[index,grep(pattern = paste0(ions[j],"_variance"),x = colnames(data.stats))] = "Two-reps are NA"
       data.stats[index,grep(pattern = paste0(ions[j],"_normalized_range"),x = colnames(data.stats))] =  (max(temp) - min(temp))/mean(temp)
       
-    }else if(length(grep("TRUE",is.na(temp)))==3){
-      data.stats[index,grep(pattern = paste0(ions[j],"_CV"),x = colnames(data.stats))] = "Three-reps are NA"
-      data.stats[index,grep(pattern = paste0(ions[j],"_range"),x = colnames(data.stats))] =  "Three-reps are NA"
-      data.stats[index,grep(pattern = paste0(ions[j],"_variance"),x = colnames(data.stats))] = "Three-reps are NA"
+    }else if(length(grep("TRUE",is.na(temp)))>=5){
+      data.stats[index,grep(pattern = paste0(ions[j],"_CV"),x = colnames(data.stats))] = "All-reps are NA"
+      data.stats[index,grep(pattern = paste0(ions[j],"_range"),x = colnames(data.stats))] =  "All-reps are NA"
+      data.stats[index,grep(pattern = paste0(ions[j],"_variance"),x = colnames(data.stats))] = "All-reps are NA"
       data.stats[index,grep(pattern = paste0(ions[j],"_normalized_range"),x = colnames(data.stats))] =  (max(temp) - min(temp))/mean(temp)
     }else if(length(grep("TRUE",is.na(temp)))==1){
       data.stats[index,grep(pattern = paste0(ions[j],"_CV"),x = colnames(data.stats))] = "One-rep is NA"
       data.stats[index,grep(pattern = paste0(ions[j],"_range"),x = colnames(data.stats))] =  "One-rep is NA"
       data.stats[index,grep(pattern = paste0(ions[j],"_variance"),x = colnames(data.stats))] = "One-rep is NA"
+      data.stats[index,grep(pattern = paste0(ions[j],"_normalized_range"),x = colnames(data.stats))] =  (max(temp) - min(temp))/mean(temp)
+    }else if(length(grep("TRUE",is.na(temp)))==2){
+      data.stats[index,grep(pattern = paste0(ions[j],"_CV"),x = colnames(data.stats))] = "Two-reps are NA"
+      data.stats[index,grep(pattern = paste0(ions[j],"_range"),x = colnames(data.stats))] =  "Two-reps are NA"
+      data.stats[index,grep(pattern = paste0(ions[j],"_variance"),x = colnames(data.stats))] = "Two-reps are NA"
       data.stats[index,grep(pattern = paste0(ions[j],"_normalized_range"),x = colnames(data.stats))] =  (max(temp) - min(temp))/mean(temp)
     }else{
      data.stats[index,grep(pattern = paste0(ions[j],"_CV"),x = colnames(data.stats))] = sd(temp) / mean(temp) * 100
